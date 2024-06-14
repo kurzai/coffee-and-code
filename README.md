@@ -1,3 +1,3 @@
 # Coffee & Code
 
-- (./01-midjourney-calendar)[Midjourney Calendar]
+- [Midjourney Calendar](./01-midjourney-calendar)
