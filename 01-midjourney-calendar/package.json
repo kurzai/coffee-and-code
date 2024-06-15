@@ -1,0 +1,27 @@
+{
+  "name": "01-midjourney-calendar",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+
+    "generate": "drizzle-kit generate",
+    "migrate": "drizzle-kit migrate",
+    "push": "drizzle-kit push"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.7.0",
+    "@libsql/client": "^0.6.2",
+    "astro": "^4.10.2",
+    "drizzle-orm": "^0.31.2",
+    "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.4",
+    "drizzle-kit": "^0.22.7"
+  }
+}
