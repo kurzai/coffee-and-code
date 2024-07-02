@@ -1,0 +1,15 @@
+---
+import { eq } from "drizzle-orm"
+import { db } from "../../db/client"
+
+const { id } = Astro.params
+if (id === undefined) return Astro.redirect("/")
+
+const calendar = await db.query.calendars.findFirst({
+  where: (calendars) => eq(calendars.id, id)
+})
+console.log(calendar)
+
+---
+
+<div>ID: {id}</div>

@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { UserPromptSchema, type UserPrompt } from '../lib/schemas';
+import { ImagineAPIJobSchema, type ImagineAPIJob, UserPromptSchema, type UserPrompt } from '../lib/schemas';
 import { CONCEPT_INSTRUCTIONS, MIDJOURNEY_INSTRUCTIONS } from '../lib/instructions';
 
 const openai = new OpenAI({
@@ -8,9 +8,9 @@ const openai = new OpenAI({
 
 function stringifyPrompt(prompt: UserPrompt): string {
   return `
-What is the subject: ${prompt.subject}
-What is the scenery: ${prompt.scenery}
-What is the style: ${prompt.style}
+The subject: ${prompt.subject}
+The scenery: ${prompt.scenery}
+The style: ${prompt.style}
 Additional Comments: ${prompt.comments}
 `.trim()
 }
@@ -46,9 +46,9 @@ export async function generatePromptFromConcept(concept: UserPrompt): Promise<st
   return chatCompletion.choices[0]?.message.content
 }
 
-export async function generateMidjourneyImages(prompt: string) {
+export async function generateMidjourneyImages(prompt: string): Promise<ImagineAPIJob | null> {
   const data = { prompt }
-  return await fetch('https://cl.imagineapi.dev/items/images/', {
+  const res = await fetch('https://cl.imagineapi.dev/items/images/', {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
@@ -56,4 +56,8 @@ export async function generateMidjourneyImages(prompt: string) {
       'Content-Type': 'application/json'
     }
   })
+  const json = await res.json()
+  const result = ImagineAPIJobSchema.safeParse(json.data)
+  if (result.success) return result.data
+  return null
 }

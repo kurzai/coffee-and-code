@@ -1,4 +1,30 @@
 ---
+import { createCalendar } from "../server/calendar"
+
+if (Astro.request.method === "POST") {
+	try {
+		const form = await Astro.request.formData()
+
+		const subject = form.get("subject")
+		const scenery = form.get("scenery")
+		const style = form.get("style")
+		const comments = form.get("comments")
+
+		if (subject === null || scenery === null || style === null || comments === null) {
+			return Astro.redirect("/")
+		} else if (typeof subject !== "string" || typeof scenery !== "string" || typeof style !== "string" || typeof comments !== "string") {
+			return Astro.redirect("/")
+		}
+
+		const id = await createCalendar({ subject, scenery, style, comments })
+		return Astro.redirect(`/${id}`)
+
+	} catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
 
 ---
 
@@ -8,9 +34,37 @@
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>AI Calendar</title>
 	</head>
-	<body>
-		<h1>Astro</h1>
+	<body class="p-10 space-y-4">
+		<h1 class="font-semibold text-xl">AI Calendar</h1>
+
+		<form class="space-y-4" method="POST">
+			<div>
+				<label>
+					Subject:
+					<input class="input input-bordered" type="text" name="subject" value="Harry Potter" required />
+				</label>	
+			</div>
+			<div>
+				<label>
+					Scenery:
+					<input class="input input-bordered" type="text" name="scenery" value="Hogwarts" required />
+				</label>	
+			</div>
+			<div>
+				<label>
+					Style:
+					<input class="input input-bordered" type="text" name="style" value="Comic" required />
+				</label>	
+			</div>
+			<div>
+				<label>
+					Comments:
+					<input class="input input-bordered" type="text" name="comments" />
+				</label>	
+			</div>
+			<button class="btn btn-primary">submit</button>
+		</form>
 	</body>
 </html>
