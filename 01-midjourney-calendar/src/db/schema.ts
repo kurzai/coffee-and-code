@@ -1,11 +1,14 @@
 
 import { relations } from "drizzle-orm";
 import { text, sqliteTable } from "drizzle-orm/sqlite-core";
+import { nanoid } from "nanoid"
+
+export const createId = () => nanoid(21)
 
 export const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"] as const
 
 export const calendars = sqliteTable("calendars", {
-  id: text("id").primaryKey(),
+  id: text("id").primaryKey().$defaultFn(() => createId()),
 
   promptSubject: text("promptSubject").notNull(),
   promptScenery: text("promptScenery").notNull(),
@@ -14,7 +17,7 @@ export const calendars = sqliteTable("calendars", {
 });
 
 export const calendarMonth = sqliteTable("calendarMonths", {
-  id: text("id").primaryKey(),
+  id: text("id").primaryKey().$defaultFn(() => createId()),
   calendarId: text("calendarId").references(() => calendars.id),
   
   month: text("month", { enum: MONTHS }).notNull(),
