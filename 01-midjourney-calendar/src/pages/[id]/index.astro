@@ -1,15 +1,65 @@
 ---
 import { eq } from "drizzle-orm"
 import { db } from "../../db/client"
+import Layout from "../../components/Layout.astro"
+import { type ImagineAPIJob } from "../../lib/schemas"
+import { getImagineAPIJob } from "../../server/prompts"
 
 const { id } = Astro.params
 if (id === undefined) return Astro.redirect("/")
 
 const calendar = await db.query.calendars.findFirst({
-  where: (calendars) => eq(calendars.id, id)
+  where: (calendars) => eq(calendars.id, id),
+  with: {
+    months: true
+  }
 })
-console.log(calendar)
+if (calendar === undefined) return Astro.redirect("/")
 
+const jobs = new Map<string, ImagineAPIJob>()
+for (const month of calendar.months) {
+  const job = await getImagineAPIJob(month.jobId)
+  if (job === null) continue
+  jobs.set(month.jobId, job)
+}
 ---
 
-<div>ID: {id}</div>
+<Layout>
+  <div class="space-y-4">
+    <h1 class="font-semibold text-xl">Prompt</h1>
+    <div class="overflow-x-auto">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Scenery</th>
+            <th>Style</th>
+            <th>Comments</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{calendar.promptSubject}</td>
+            <td>{calendar.promptScenery}</td>
+            <td>{calendar.promptStyle}</td>
+            <td>{calendar.promptComments}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="space-y-4 w-full">
+    <h1 class="font-semibold text-xl">Images</h1>
+    <div>
+      {calendar.months.map(month => {
+        const job = jobs.get(month.jobId)
+        return (
+          <h2 class="font-semibold text-lg">{month.month}</h2>
+          <div class="grid grid-cols-4 gap-4 w-full">
+            {job?.upscaled_urls?.map(src => <img src={src} />)}
+          </div>
+        )
+      })}
+    </div>
+  </div>
+</Layout>

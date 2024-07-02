@@ -61,3 +61,16 @@ export async function generateMidjourneyImages(prompt: string): Promise<ImagineA
   if (result.success) return result.data
   return null
 }
+
+export async function getImagineAPIJob(jobId: string): Promise<ImagineAPIJob | null> {
+  const res = await fetch(`https://cl.imagineapi.dev/items/images/${jobId}`, {
+    headers: {
+      'Authorization': `Bearer ${Bun.env["IMAGINE_API_KEY"]}`,
+    }
+  })
+  const json = await res.json()
+  console.log(json)
+  const result = ImagineAPIJobSchema.safeParse(json.data)
+  if (result.success) return result.data
+  return null
+}

@@ -1,5 +1,10 @@
 ---
+import Layout from "../components/Layout.astro"
+import { db } from "../db/client"
 import { createCalendar } from "../server/calendar"
+
+const calendars = await db.query.calendars.findMany()
+console.log(calendars)
 
 if (Astro.request.method === "POST") {
 	try {
@@ -28,16 +33,16 @@ if (Astro.request.method === "POST") {
 
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>AI Calendar</title>
-	</head>
-	<body class="p-10 space-y-4">
+<Layout>
 		<h1 class="font-semibold text-xl">AI Calendar</h1>
+
+		<ul class="list list-disc pl-4">
+			{calendars.map(calendar => (
+				<li>
+					<a href={`/${calendar.id}`} class="underline">{calendar.id}</a>
+				</li>
+			))}
+		</ul>
 
 		<form class="space-y-4" method="POST">
 			<div>
@@ -66,5 +71,4 @@ if (Astro.request.method === "POST") {
 			</div>
 			<button class="btn btn-primary">submit</button>
 		</form>
-	</body>
-</html>
+	</Layout>
