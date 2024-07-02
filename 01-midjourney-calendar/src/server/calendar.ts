@@ -3,7 +3,7 @@ import { MONTHS, calendarMonth, calendars, createId } from "../db/schema";
 import type { UserPrompt } from "../lib/schemas";
 import { generateConcept, generateMidjourneyImages, generatePromptFromConcept } from "../server/prompts"
 
-export async function createCalendar(prompt: UserPrompt) {
+export async function createCalendar(prompt: UserPrompt): Promise<string | null> {
   const concept = await generateConcept(prompt)
   if (concept === null) throw new Error("Could not generate concept")
 
@@ -43,6 +43,6 @@ export async function createCalendar(prompt: UserPrompt) {
     })
   }
 
-
+  // return null
   return calendarId
 }

@@ -3,13 +3,12 @@ export const CONCEPT_INSTRUCTIONS = `
 Create a concept for the following calendar from a set of subject, scenery, style and additional comments.
 
 The concept should contain concrete examples for each category for each year of the month.
+There should be 12 items in the resulting array from january - december
 
 Only output one JSON object with the following schema:
-[
-{ "subject": "...", "scenery": "...", "style": "...", "comments": "..." }, ...
-]
+[ { "subject": "...", "scenery": "...", "style": "...", "comments": "..." }, ... ]
 
-Make sure only to output the JSON object and nothing else
+Make sure only to output the JSON object and only the JSON
 `.trim()
 
 export const MIDJOURNEY_INSTRUCTIONS = `

@@ -4,7 +4,6 @@ import { db } from "../db/client"
 import { createCalendar } from "../server/calendar"
 
 const calendars = await db.query.calendars.findMany()
-console.log(calendars)
 
 if (Astro.request.method === "POST") {
 	try {
@@ -22,6 +21,9 @@ if (Astro.request.method === "POST") {
 		}
 
 		const id = await createCalendar({ subject, scenery, style, comments })
+		if (id === null) {
+			return Astro.redirect("/")
+		}
 		return Astro.redirect(`/${id}`)
 
 	} catch (error) {
